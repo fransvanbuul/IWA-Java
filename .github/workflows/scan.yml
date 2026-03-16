@@ -2,7 +2,7 @@
 # Runs an OpenText SAST (Fortify) scan using Scan Central, using fortify/github-action@v3.
 #
 
-name: Scan
+name: OpenText SAST
 
 on:
   workflow_dispatch:
