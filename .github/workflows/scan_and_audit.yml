@@ -1,0 +1,41 @@
+#
+# Runs an OpenText SAST (Fortify) with SAST Aviator using Scan Central, using fortify/github-action@v3.
+#
+
+name: OpenText SAST with Aviator
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run ScanCentral SAST
+        uses: fortify/github-action@v3
+        env:
+          FCLI_BOOTSTRAP_VERSION: ${{vars.FCLI_VERSION}}
+          SSC_URL: ${{vars.SSC_URL}}
+          SC_CLIENT_VERSION: ${{vars.SC_CLIENT_VERSION}}
+          SSC_TOKEN: ${{secrets.SSC_TOKEN}}
+          SC_SAST_TOKEN: ${{secrets.SC_SAST_CLIENT_AUTH_TOKEN}}
+          SSC_APPVERSION: "${{vars.APPLICATION_NAME}}:${{github.ref_name}}"
+          DO_SETUP: true
+          SETUP_EXTRA_OPTS: '--issue-template "Prioritized High Risk Issue Template"'
+          DO_WAIT: true
+          DO_JOB_SUMMARY: true
+          AVIATOR_URL: ${{vars.AVIATOR_URL}}
+          AVIATOR_APP: "${{vars.APPLICATION_NAME}}"
+          AVIATOR_TOKEN: ${{secrets.AVIATOR_TOKEN}}          
